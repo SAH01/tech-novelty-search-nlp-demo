@@ -15,6 +15,7 @@ class Config(object):
         self.test_path = dataset + '/data/test.txt'                                  # 测试集
         self.class_list = [x.strip() for x in open(
             dataset + '/data/class.txt', encoding='utf-8').readlines()]              # 类别名单
+
         self.vocab_path = dataset + '/data/vocab.pkl'                                # 词表
         self.save_path = dataset + '/saved_dict/' + self.model_name + '.ckpt'        # 模型训练结果
         self.log_path = dataset + '/log/' + self.model_name
@@ -47,12 +48,14 @@ class Model(nn.Module):
             self.embedding = nn.Embedding.from_pretrained(config.embedding_pretrained, freeze=False)
         else:
             self.embedding = nn.Embedding(config.n_vocab, config.embed, padding_idx=config.n_vocab - 1)
+        # 生成三个2 3 4 卷积窗口
         self.convs = nn.ModuleList(
             [nn.Conv2d(1, config.num_filters, (k, config.embed)) for k in config.filter_sizes])
         self.dropout = nn.Dropout(config.dropout)
         self.fc = nn.Linear(config.num_filters * len(config.filter_sizes), config.num_classes)
 
     def conv_and_pool(self, x, conv):
+        # relu 激活函数 最大池化层
         x = F.relu(conv(x)).squeeze(3)
         x = F.max_pool1d(x, x.size(2)).squeeze(2)
         return x
@@ -60,7 +63,9 @@ class Model(nn.Module):
     def forward(self, x):
         out = self.embedding(x[0])
         out = out.unsqueeze(1)
+        # 卷积
         out = torch.cat([self.conv_and_pool(out, conv) for conv in self.convs], 1)
         out = self.dropout(out)
+        # 全连接
         out = self.fc(out)
         return out

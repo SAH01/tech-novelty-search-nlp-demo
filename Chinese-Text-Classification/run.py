@@ -7,13 +7,14 @@ from importlib import import_module
 import argparse
 
 parser = argparse.ArgumentParser(description='Chinese Text Classification')
-parser.add_argument('--model', type=str, required=True, help='choose a model: TextCNN, TextRNN, FastText, TextRCNN, TextRNN_Att, DPCNN, Transformer')
+parser.add_argument('--model', type=str, required=True, help='choose a model: TextCNN, TextRNN,'
+                    ' FastText, TextRCNN, TextRNN_Att, DPCNN, Transformer')
 parser.add_argument('--embedding', default='pre_trained', type=str, help='random or pre_trained')
 parser.add_argument('--word', default=False, type=bool, help='True for word, False for char')
 args = parser.parse_args()
 
 if __name__ == '__main__':
-    dataset = 'THUCNews'  # 数据集
+    dataset = 'THUCNews'  # 清华新闻数据集
 
     # 搜狗新闻:embedding_SougouNews.npz, 腾讯:embedding_Tencent.npz, 随机初始化:random
     embedding = 'embedding_SougouNews.npz'
@@ -35,7 +36,9 @@ if __name__ == '__main__':
 
     start_time = time.time()
     print("Loading data...")
+    # build_dataset 加载数据集 训练 验证 测试 词表vocab
     vocab, train_data, dev_data, test_data = build_dataset(config, args.word)
+    # 生成迭代器
     train_iter = build_iterator(train_data, config)
     dev_iter = build_iterator(dev_data, config)
     test_iter = build_iterator(test_data, config)
@@ -43,7 +46,7 @@ if __name__ == '__main__':
     print("Time usage:", time_dif)
 
     # train
-    config.n_vocab = len(vocab)
+    config.n_vocab = len(vocab) # 统计词表大小
     model = x.Model(config).to(config.device)
     if model_name != 'Transformer':
         init_network(model)
