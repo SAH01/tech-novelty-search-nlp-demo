@@ -128,8 +128,8 @@ def get_time_dif(start_time):
 if __name__ == "__main__":
     '''提取预训练词向量'''
     # 下面的目录、文件名按需更改。
-    train_dir = "./THUCNews/data/train.txt"
-    vocab_dir = "./THUCNews/data/vocab.pkl"
+    train_dir = "pre_data/train.txt"
+    vocab_dir = "pre_data/vocab.pkl"
     pretrain_dir = "./THUCNews/data/sgns.sogou.char"
     emb_dim = 300
     filename_trimmed_dir = "./THUCNews/data/embedding_SougouNews"

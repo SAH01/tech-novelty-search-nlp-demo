@@ -150,7 +150,7 @@ def get_time_dif(start_time):
 
 if __name__ == "__main__":
     '''提取预训练词向量'''
-    vocab_dir = "./THUCNews/data/vocab.pkl"
+    vocab_dir = "pre_data/vocab.pkl"
     pretrain_dir = "./THUCNews/data/sgns.sogou.char"
     emb_dim = 300
     filename_trimmed_dir = "./THUCNews/data/vocab.embedding.sougou"
